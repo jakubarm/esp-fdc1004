@@ -108,7 +108,7 @@ esp_err_t FDC1004::configureMeasurementSingle(uint8_t measurement, uint8_t chann
     }
 
     //build 16 bit configuration
-    uint16_t configuration_data;
+    uint16_t configuration_data = 0;
     configuration_data = ((uint16_t)channel) << 13; //CHA
     configuration_data |=  ((uint16_t)0x04) << 10; //CHB disable / CAPDAC enable
     configuration_data |= ((uint16_t)capdac) << 5; //CAPDAC value
@@ -127,7 +127,7 @@ esp_err_t FDC1004::configureChannelGain(uint8_t channel, uint8_t gain_int, uint1
     }
 
     //build 16 bit gain
-    uint16_t gain_data;
+    uint16_t gain_data = 0;
     gain_data = ((uint16_t)gain_int) << 14; //integer part
     gain_data |=  ((uint16_t)gain_dec) & 0x3FF; //decimal part
     esp_err_t res = write16(GAIN_CAL[channel], gain_data);
@@ -142,7 +142,7 @@ esp_err_t FDC1004::triggerSingleMeasurement(uint8_t measurement, uint8_t rate)
         ESP_LOGE(this->TAG, "Bad trigger request");
         return ESP_ERR_INVALID_ARG;
     }
-    uint16_t trigger_data;
+    uint16_t trigger_data = 0;
     trigger_data = ((uint16_t)rate) << 10; // sample rate
     trigger_data |= 0 << 8; //repeat disabled
     trigger_data |= (1 << (7-measurement)); // 0 > bit 7, 1 > bit 6, etc
